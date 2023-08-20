@@ -18,4 +18,10 @@ class UserService extends BaseService
         }
         return $this->repository->update($id, $data);
     }
+
+    public function findProfile($username)
+    {
+
+        return $this->find(['username' => $username], ['posts']);
+    }
 }

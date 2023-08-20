@@ -19,6 +19,7 @@ class AuthController extends BaseAPIController
             'register' => 'Registrasi Berhasil',
         ];
     }
+
     public function login(AuthLoginRequest $request, AuthService $service)
     {
         $loginResult = $service->attemptLogin($request->validated());
@@ -35,6 +36,7 @@ class AuthController extends BaseAPIController
         Auth::logout();
         return $this->sendResponse(null, JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
+
     public function me()
     {
         $user = Auth::getUser();

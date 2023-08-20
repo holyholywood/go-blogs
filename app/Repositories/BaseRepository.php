@@ -43,9 +43,9 @@ class BaseRepository
         return $model;
     }
 
-    public function delete($id)
+    public function delete($search)
     {
-        $model = $this->find($id);
+        $model = $this->find($search);
         $model->delete();
     }
 }

@@ -11,13 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('articles', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->nullable();
+            $table->string('slug')->nullable();
             $table->text('body');
-            $table->string('banner');
+            $table->string('banner')->nullable();
+            $table->enum('type', ['poem', 'article'])->default('article');
             $table->unsignedBigInteger('creator_id');
             $table->timestamps();
+
+
+            $table->index('slug', null);
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -26,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('articles');
+        Schema::dropIfExists('posts');
     }
 };

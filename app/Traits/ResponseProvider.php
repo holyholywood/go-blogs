@@ -12,7 +12,7 @@ trait ResponseProvider
             'status' => true,
             'statusCode' => $statusCode,
             'message' => $message,
-            'data' => $payload,
+            'payload' => $payload,
         ], $statusCode);
 
         if ($meta && $metaData) {
@@ -20,7 +20,7 @@ trait ResponseProvider
                 'status' => true,
                 'statusCode' => $statusCode,
                 'message' => $message,
-                'data' => $payload,
+                'payload' => $payload,
                 $meta => $metaData
             ], $statusCode);
         }

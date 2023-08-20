@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Http\Controllers\API\v1;
+
+use App\Http\Controllers\API\BaseAPIController;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
+use App\Services\PostService;
+use Illuminate\Http\JsonResponse;
+
+class PostController extends BaseAPIController
+{
+    public function __construct()
+    {
+        $this->responseMessage = [
+            'index' => 'Berhasil',
+            'store' => 'Berhasil menambahkan post',
+            'show' => 'Berhasil',
+            'update' => 'Berhasil memperbarui post',
+            'destroy' => 'Berhasil menghapus post',
+        ];
+
+        $this->objectName = 'Post';
+    }
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(PostService $service)
+    {
+        return $this->sendResponse($service->all(), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StorePostRequest $request, PostService $service)
+    {
+        return $this->sendResponse($service->createPost($request->validated()), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $post_id, PostService $service)
+    {
+        return $this->sendResponse($service->find(['id' => $post_id], ['categories']), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdatePostRequest $request, string $post_id, PostService $service)
+    {
+        return $this->sendResponse($request->validated());
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $post_id, PostService $service)
+    {
+        return $this->sendResponse($service->delete(['id' => $post_id]), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+    }
+}
