@@ -23,6 +23,7 @@ class StoreUserRegisterRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'username' => 'required',
             'email' => 'required|email',
             'password' => 'required',
             'avatar' => 'string|nullable',
