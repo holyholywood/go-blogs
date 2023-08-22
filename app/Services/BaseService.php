@@ -19,6 +19,11 @@ class BaseService
         return $this->repository->all($search, $relations);
     }
 
+    public function search($field,  $search, $relations = [])
+    {
+        return $this->repository->search($field, $search, $relations = []);
+    }
+
     public function report($from, $to, $search = [], $relations = [])
     {
 

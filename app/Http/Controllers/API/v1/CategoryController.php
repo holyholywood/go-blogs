@@ -14,6 +14,7 @@ class CategoryController extends BaseAPIController
         $this->responseMessage = [
             'index' => 'Berhasil',
             'store' => 'Berhasil menambahkan kategori',
+            'search' => 'Berhasil',
             'show' => 'Berhasil',
             'update' => 'Berhasil memperbarui kategori',
             'destroy' => 'Berhasil menghapus kategori',
@@ -24,8 +25,13 @@ class CategoryController extends BaseAPIController
     /**
      * Display a listing of the resource.
      */
-    public function index(CategoryService $service)
+    public function index(CategoryService $service, Request $request)
     {
+        $search = $request->query('search');
+
+        if ($search) {
+            return $this->sendResponse($service->search('category_name',  $search), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+        }
         return $this->sendResponse($service->all(), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 

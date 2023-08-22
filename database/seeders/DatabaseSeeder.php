@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
             'username' => 'ditotisi',
             'email' => 'dito.devs@gmail.com',
             'password' => Hash::make('pass'),
-            'avatar' => 'images'
         ]);
 
         $this->call([

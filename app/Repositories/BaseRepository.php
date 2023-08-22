@@ -17,6 +17,14 @@ class BaseRepository
         return $this->model::where($search)->with($with)->get();
     }
 
+    public function search($field, $search, $with = [])
+    {
+        if (!$search) {
+            return $this->all([], $with);
+        }
+        return $this->model::where($field, 'like', "%" . $search . "%")->with($with)->get();
+    }
+
     public function report($from, $to, $search = [], $with = [])
     {
         return $this->model::whereBetween('created_at', [$from, $to])->with($with)->get();
