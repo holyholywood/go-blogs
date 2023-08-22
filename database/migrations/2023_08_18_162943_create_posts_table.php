@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('slug')->nullable();
+            $table->string('title');
+            $table->string('slug');
             $table->text('body');
             $table->string('banner')->nullable();
             $table->enum('type', ['poem', 'article'])->default('article');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
 
-            $table->index('slug', null);
+            $table->index('slug');
             $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

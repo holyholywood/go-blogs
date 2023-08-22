@@ -41,9 +41,9 @@ class PostController extends BaseAPIController
     /**
      * Display the specified resource.
      */
-    public function show(string $post_id, PostService $service)
+    public function show(string $slug, PostService $service)
     {
-        return $this->sendResponse($service->find(['id' => $post_id], ['categories']), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+        return $this->sendResponse($service->find(['slug' => $slug], ['categories']), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
     /**
