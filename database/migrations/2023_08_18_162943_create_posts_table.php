@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug');
             $table->text('body');
+            $table->text('summary');
             $table->string('banner')->nullable();
             $table->enum('type', ['poem', 'article'])->default('article');
             $table->unsignedBigInteger('creator_id');

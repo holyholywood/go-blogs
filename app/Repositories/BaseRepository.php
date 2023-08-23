@@ -12,9 +12,18 @@ class BaseRepository
     {
         $this->model = $model;
     }
-    public function all($search = [], $with = [])
-    {
-        return $this->model::where($search)->with($with)->get();
+    public function all($search = [], $with = [], $config = [
+        'select' => ['*'],
+        'orderBy' => [
+            'field' => 'id',
+            'sort' => 'asc'
+        ]
+    ])
+    {;
+        return $this->model::where($search)
+            ->with($with)
+            ->orderBy($config['orderBy']['field'], $config['orderBy']['sort'])
+            ->get($config['select']);
     }
 
     public function search($field, $search, $with = [])

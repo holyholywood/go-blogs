@@ -7,6 +7,8 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends BaseAPIController
 {
@@ -16,6 +18,7 @@ class PostController extends BaseAPIController
             'index' => 'Berhasil',
             'store' => 'Berhasil menambahkan post',
             'show' => 'Berhasil',
+            'me' => 'Berhasil',
             'update' => 'Berhasil memperbarui post',
             'destroy' => 'Berhasil menghapus post',
         ];
@@ -27,7 +30,24 @@ class PostController extends BaseAPIController
      */
     public function index(PostService $service)
     {
-        return $this->sendResponse($service->all(), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+        return $this->sendResponse($service->all([], ['creator', 'categories'],  [
+            'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
+            'orderBy' => [
+                'field' => 'created_at',
+                'sort' => 'desc'
+            ]
+        ]), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+    }
+
+    public function me(PostService $service)
+    {
+        return $this->sendResponse($service->all(['creator_id' => Auth::id()], ['creator', 'categories'],  [
+            'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
+            'orderBy' => [
+                'field' => 'created_at',
+                'sort' => 'desc'
+            ]
+        ]), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
     /**
@@ -35,6 +55,7 @@ class PostController extends BaseAPIController
      */
     public function store(StorePostRequest $request, PostService $service)
     {
+
         return $this->sendResponse($service->createPost($request->validated()), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
@@ -43,7 +64,7 @@ class PostController extends BaseAPIController
      */
     public function show(string $slug, PostService $service)
     {
-        return $this->sendResponse($service->find(['slug' => $slug], ['categories']), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+        return $this->sendResponse($service->find(['slug' => $slug], ['categories', 'creator']), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
     /**

@@ -15,6 +15,7 @@ class Post extends Model
         'title',
         'slug',
         'body',
+        'summary',
         'banner',
         'type',
         'creator_id'

@@ -29,6 +29,7 @@ class PostService extends BaseService
 
             $data['creator_id'] = Auth::id();
             $data['slug'] = $this->setPostSlug($data['title']);
+            $data['summary'] = $this->setPostSummary($data['body']);
 
             $post = $this->create($data);
 
@@ -52,5 +53,13 @@ class PostService extends BaseService
         }
 
         return null;
+    }
+
+    protected function setPostSummary($body)
+    {
+        $plainText = strip_tags($body);
+        $extractedText = substr($plainText, 0, 150);
+
+        return $extractedText;
     }
 }

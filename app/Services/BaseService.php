@@ -14,8 +14,11 @@ class BaseService
         $this->repository = $repository;
     }
 
-    public function all($search = [], $relations = [])
+    public function all($search = [], $relations = [], $config = null)
     {
+        if ($config) {
+            return $this->repository->all($search, $relations, $config);
+        }
         return $this->repository->all($search, $relations);
     }
 
