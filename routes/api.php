@@ -44,7 +44,7 @@ Route::group(['prefix' => '/v1'], function () {
      */
     Route::controller(UserController::class)->prefix('/users')->name('User')->middleware('auth:api')->group(function () {
         Route::get('/profile/{username}', 'show')->name('show')->withoutMiddleware('auth:api');
-        Route::patch('/profile', 'update')->name('update');
+        Route::patch('/profile/{user_id}', 'update')->name('update');
         Route::delete('/profile', 'destroy')->name('delete');
     });
 

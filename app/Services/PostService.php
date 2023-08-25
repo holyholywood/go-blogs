@@ -57,8 +57,9 @@ class PostService extends BaseService
 
     protected function setPostSummary($body)
     {
-        $plainText = strip_tags($body);
-        $extractedText = substr($plainText, 0, 150);
+        $plainText = strip_tags(str_replace('<', ' <', $body));
+        $plainTextWithSpaces = str_replace('&nbsp;', ' ', $plainText);
+        $extractedText = substr($plainTextWithSpaces, 0, 150);
 
         return $extractedText;
     }

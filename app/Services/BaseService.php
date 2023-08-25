@@ -21,6 +21,13 @@ class BaseService
         }
         return $this->repository->all($search, $relations);
     }
+    public function allPaginate($search = [], $relations = [], $config = null)
+    {
+        if ($config) {
+            return $this->repository->allPaginate($search, $relations, $config);
+        }
+        return $this->repository->allPaginate($search, $relations);
+    }
 
     public function search($field,  $search, $relations = [])
     {

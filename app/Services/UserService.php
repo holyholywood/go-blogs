@@ -13,9 +13,6 @@ class UserService extends BaseService
     }
     public function update($id, array $data)
     {
-        if (!$data['password']) {
-            unset($data['password']);
-        }
         return $this->repository->update($id, $data);
     }
 

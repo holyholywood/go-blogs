@@ -28,6 +28,23 @@ trait ResponseProvider
         return $Response;
     }
 
+    public function sendResponseWithPagination($payload, $statusCode, $message = "Berhasil")
+    {
+        $data = $payload->items();
+        $metaData = [
+            'current_page' => $payload->currentPage(),
+            'last_page' => $payload->lastPage(),
+            'from' => $payload->firstItem(),
+            'to' => $payload->lastItem(),
+            'per_page' => $payload->perPage(),
+            'total_data' => $payload->total(),
+            'show' => $payload->count(),
+        ];
+
+        return $this->sendResponse($data, $statusCode, $message, 'meta', $metaData);
+    }
+
+
     public function sendError($errorCode = 400, $errorMessage = 'Error', $trace = [])
     {
         if (env('APP_ENV') === 'local' || env('APP_ENV') === 'development') {

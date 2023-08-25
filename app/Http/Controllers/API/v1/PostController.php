@@ -30,7 +30,7 @@ class PostController extends BaseAPIController
      */
     public function index(PostService $service)
     {
-        return $this->sendResponse($service->all([], ['creator', 'categories'],  [
+        return $this->sendResponseWithPagination($service->allPaginate([], ['creator', 'categories'],  [
             'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
             'orderBy' => [
                 'field' => 'created_at',

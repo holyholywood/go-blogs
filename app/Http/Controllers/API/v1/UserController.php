@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\API\BaseAPIController;
+use App\Http\Requests\UpdateUserRequest;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,9 +32,10 @@ class UserController extends BaseAPIController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, UserService $service)
+    public function update(UpdateUserRequest $request, UserService $service, $user_id)
     {
-        //
+
+        return $this->sendResponse($service->update($user_id, $request->validated()), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
     /**
