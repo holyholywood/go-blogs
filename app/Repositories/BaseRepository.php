@@ -30,13 +30,14 @@ class BaseRepository
         'orderBy' => [
             'field' => 'id',
             'sort' => 'asc'
-        ]
+        ],
+        'limit' => 10
     ])
     {;
         return $this->model::where($search)
             ->with($with)
             ->orderBy($config['orderBy']['field'], $config['orderBy']['sort'])->select($config['select'])
-            ->paginate();
+            ->paginate($config['limit']);
     }
 
     public function search($field, $search, $with = [])

@@ -22,7 +22,7 @@ class PostService extends BaseService
         $this->userService = $userService;
     }
 
-    public function getByUsername($username, $type = null)
+    public function getByUsername($username, $type = null, $limit = 25)
     {
         $user = $this->userService->find(['username' => $username]);
 
@@ -31,28 +31,31 @@ class PostService extends BaseService
         }
         switch ($type) {
             case 'poem':
-                return $this->all(['creator_id' => $user->id, 'type' => 'poem'], ['creator', 'categories'],  [
+                return $this->allPaginate(['creator_id' => $user->id, 'type' => 'poem'], ['creator', 'categories'],  [
                     'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
                     'orderBy' => [
                         'field' => 'created_at',
                         'sort' => 'desc'
-                    ]
+                    ],
+                    'limit' => $limit
                 ]);
             case 'article':
-                return $this->all(['creator_id' => $user->id, 'type' => 'article'], ['creator', 'categories'],  [
+                return $this->allPaginate(['creator_id' => $user->id, 'type' => 'article'], ['creator', 'categories'],  [
                     'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
                     'orderBy' => [
                         'field' => 'created_at',
                         'sort' => 'desc'
-                    ]
+                    ],
+                    'limit' => $limit
                 ]);
             default:
-                return $this->all(['creator_id' => $user->id], ['creator', 'categories'],  [
+                return $this->allPaginate(['creator_id' => $user->id], ['creator', 'categories'],  [
                     'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
                     'orderBy' => [
                         'field' => 'created_at',
                         'sort' => 'desc'
-                    ]
+                    ],
+                    'limit' => $limit
                 ]);
         }
     }

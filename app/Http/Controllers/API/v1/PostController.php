@@ -42,7 +42,7 @@ class PostController extends BaseAPIController
 
     public function user(PostService $service, $username, Request $request)
     {
-        return $this->sendResponse($service->getByUsername($username, $request->query('type')), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+        return $this->sendResponseWithPagination($service->getByUsername($username, $request->query('type'), $request->query('limit')), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
     public function me(PostService $service)
