@@ -31,7 +31,7 @@ class PostService extends BaseService
             $data['slug'] = $this->setPostSlug($data['title']);
             $data['summary'] = $this->setPostSummary($data['body']);
 
-            $post = $this->create($data);
+            $post = $this->create($data, $with);
 
 
             $this->postCategoryService->createPostCategory($post->id, $categories);

@@ -30,7 +30,7 @@ class PostController extends BaseAPIController
      */
     public function index(PostService $service)
     {
-        return $this->sendResponseWithPagination($service->allPaginate([], ['creator', 'categories'],  [
+        return $this->sendResponse($service->all([], ['creator', 'categories'],  [
             'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
             'orderBy' => [
                 'field' => 'created_at',
@@ -56,7 +56,7 @@ class PostController extends BaseAPIController
     public function store(StorePostRequest $request, PostService $service)
     {
 
-        return $this->sendResponse($service->createPost($request->validated()), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+        return $this->sendResponse($service->createPost($request->validated(), ['creator']), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
     /**
