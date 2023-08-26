@@ -19,6 +19,7 @@ class PostController extends BaseAPIController
             'store' => 'Berhasil menambahkan post',
             'show' => 'Berhasil',
             'me' => 'Berhasil',
+            'user' => 'Berhasil',
             'update' => 'Berhasil memperbarui post',
             'destroy' => 'Berhasil menghapus post',
         ];
@@ -37,6 +38,11 @@ class PostController extends BaseAPIController
                 'sort' => 'desc'
             ]
         ]), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+    }
+
+    public function user(PostService $service, $username, Request $request)
+    {
+        return $this->sendResponse($service->getByUsername($username, $request->query('type')), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
     public function me(PostService $service)

@@ -65,6 +65,7 @@ Route::group(['prefix' => '/v1'], function () {
     Route::controller(PostController::class)->prefix('/posts')->name('Post')->middleware('auth:api')->group(function () {
         Route::get('/', 'index')->name('index')->withoutMiddleware('auth:api');
         Route::get('/me', 'me')->name('me')->withoutMiddleware('auth:api');
+        Route::get('/user/{username}', 'user')->name('user')->withoutMiddleware('auth:api');
         Route::get('/{slug}', 'show')->name('show')->withoutMiddleware('auth:api');
         Route::post('/', 'store')->name('store');
         Route::patch('/{post_id}', 'update')->name('update');
