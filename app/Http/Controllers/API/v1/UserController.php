@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends BaseAPIController
 {
@@ -16,6 +17,7 @@ class UserController extends BaseAPIController
             'show' => 'Berhasil',
             'update' => 'Berhasil memperbarui profil',
             'destroy' => 'Berhasil menghapus profil',
+            'deleteProfile' => 'Berhasil menghapus avatar',
         ];
 
         $this->objectName = 'Profil';
@@ -44,5 +46,13 @@ class UserController extends BaseAPIController
     public function destroy(UserService $service)
     {
         //
+    }
+
+    public function deleteProfile(UserService $service)
+    {
+        $user_id = Auth::id();
+        return   $this->sendResponse($service->update($user_id, [
+            'avatar' =>  null
+        ]), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 }

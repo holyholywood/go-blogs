@@ -18,7 +18,6 @@ class UserService extends BaseService
 
     public function findProfile($username)
     {
-
         return $this->find(['username' => $username], ['posts']);
     }
 }

@@ -46,6 +46,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::get('/profile/{username}', 'show')->name('show')->withoutMiddleware('auth:api');
         Route::patch('/profile/{user_id}', 'update')->name('update');
         Route::delete('/profile', 'destroy')->name('delete');
+        Route::delete('/profile/avatar', 'deleteProfile')->name('deleteProfile');
     });
 
     /**
