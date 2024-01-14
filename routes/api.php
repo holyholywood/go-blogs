@@ -4,7 +4,10 @@ use App\Http\Controllers\API\v1\AuthController;
 use App\Http\Controllers\API\v1\CategoryController;
 use App\Http\Controllers\API\v1\MediaController;
 use App\Http\Controllers\API\v1\PostController;
+use App\Http\Controllers\API\v1\PostOpenAPIController;
 use App\Http\Controllers\API\v1\UserController;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -80,5 +83,23 @@ Route::group(['prefix' => '/v1'], function () {
         Route::post('/{post_id}/comments', 'storeComment')->name('storeComment');
         Route::patch('/{post_id}/comments/{comment_id}', 'updateComment')->name('updateComment');
         Route::delete('/{post_id}/comments/{comment_id}', 'destroyComment')->name('deleteComment');
+    });
+});
+
+
+
+Route::prefix("/openapi")->middleware(["openapi"])->group(function () {
+
+    Route::get("/test", (function (Response $response, Request $request) {
+        return $request->ip();
+    }));
+    Route::controller(PostOpenAPIController::class)->prefix("/posts")->name("openAPIPost")->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/categories', 'indexCategory')->name('indexCategory');
+        Route::get('/me', 'me')->name('me');
+        Route::get('/{slug}', 'show')->name('show');
+        Route::post('/', 'store')->name('store');
+        Route::patch('/{post_id}', 'update')->name('update');
+        Route::delete('/{post_id}', 'destroy')->name('delete');
     });
 });

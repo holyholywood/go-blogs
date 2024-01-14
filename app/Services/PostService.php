@@ -6,6 +6,7 @@ use App\Services\BaseService;
 use App\Repositories\PostRepository;
 use Error;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -22,16 +23,40 @@ class PostService extends BaseService
         $this->userService = $userService;
     }
 
-    public function getByUsername($username, $type = null, $limit = 25)
+    public function findPostBySlug($slug)
     {
-        $user = $this->userService->find(['username' => $username]);
+        return Cache::remember($slug . "-cache", 30 * 60, function () use ($slug) {
+
+            return $this->find(['slug' => $slug], ['categories', 'creator']);
+        });
+    }
+
+    public function allData($limit = 10)
+    {
+        return $this->allPaginate([],  ['creator', 'categories'], [
+            'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
+            'orderBy' => [
+                'field' => 'created_at',
+                'sort' => 'desc'
+            ],
+            'limit' => $limit
+        ],);
+    }
+
+    public function getByUsername($username, $type = null, $limit = 100)
+    {
+        $user = Cache::remember($username, 60 * 30, function () use ($username) {
+            return $this->userService->find(['username' => $username]);
+        });
 
         if (!$user) {
             throw new NotFoundHttpException();
         }
+
+        $result = null;
         switch ($type) {
             case 'poem':
-                return $this->allPaginate(['creator_id' => $user->id, 'type' => 'poem'], ['creator', 'categories'],  [
+                $result =  $this->allPaginate(['creator_id' => $user->id, 'type' => 'poem'], ['creator', 'categories'],  [
                     'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
                     'orderBy' => [
                         'field' => 'created_at',
@@ -39,8 +64,9 @@ class PostService extends BaseService
                     ],
                     'limit' => $limit
                 ]);
+                break;
             case 'article':
-                return $this->allPaginate(['creator_id' => $user->id, 'type' => 'article'], ['creator', 'categories'],  [
+                $result =   $this->allPaginate(['creator_id' => $user->id, 'type' => 'article'], ['creator', 'categories'],  [
                     'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
                     'orderBy' => [
                         'field' => 'created_at',
@@ -48,19 +74,28 @@ class PostService extends BaseService
                     ],
                     'limit' => $limit
                 ]);
+                break;
             default:
-                return $this->allPaginate(['creator_id' => $user->id], ['creator', 'categories'],  [
-                    'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
-                    'orderBy' => [
-                        'field' => 'created_at',
-                        'sort' => 'desc'
-                    ],
-                    'limit' => $limit
-                ]);
+                $result = Cache::remember("user-posts-" . $limit . $username, 60 * 30,  function () use ($user, $limit) {
+                    return    $this->allPaginate(['creator_id' => $user->id], ['creator', 'categories'],  [
+                        'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
+                        'orderBy' => [
+                            'field' => 'created_at',
+                            'sort' => 'desc'
+                        ],
+                        'limit' => $limit
+                    ]);
+                });
+
+                break;
         }
+
+
+
+        return $result;
     }
 
-    public function createPost(array $data, $with = [])
+    public function createPost(array $data, $with = [], $id = null)
     {
         DB::beginTransaction();
         try {
@@ -68,7 +103,7 @@ class PostService extends BaseService
 
             unset($data['categories']);
 
-            $data['creator_id'] = Auth::id();
+            $data['creator_id'] = $id ? $id :  Auth::id();
             $data['slug'] = $this->setPostSlug($data['title']);
             $data['summary'] = $this->setPostSummary($data['body']);
 

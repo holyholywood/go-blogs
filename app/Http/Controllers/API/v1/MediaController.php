@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Http\Controllers\API\BaseAPIController;
 use App\Http\Requests\StoreMediaRequest;
 use App\Services\MediaService;
+use Illuminate\Http\Request;
 
 class MediaController extends BaseAPIController
 {

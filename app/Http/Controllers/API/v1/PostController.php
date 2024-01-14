@@ -29,15 +29,9 @@ class PostController extends BaseAPIController
     /**
      * Display a listing of the resource.
      */
-    public function index(PostService $service)
+    public function index(PostService $service, Request $request)
     {
-        return $this->sendResponse($service->all([], ['creator', 'categories'],  [
-            'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
-            'orderBy' => [
-                'field' => 'created_at',
-                'sort' => 'desc'
-            ]
-        ]), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+        return $this->sendResponseWithPagination($service->allData($request->query('limit')), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
     public function user(PostService $service, $username, Request $request)
@@ -45,14 +39,14 @@ class PostController extends BaseAPIController
         return $this->sendResponseWithPagination($service->getByUsername($username, $request->query('type'), $request->query('limit')), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
-    public function me(PostService $service)
+    public function me(PostService $service, Request $request)
     {
-        return $this->sendResponse($service->all(['creator_id' => Auth::id()], ['creator', 'categories'],  [
+        return $this->sendResponseWithPagination($service->allPaginate(['creator_id' => Auth::id()], ['creator', 'categories'],  [
             'select' => ['id', 'title', 'creator_id', 'summary', 'slug', 'banner', 'type', 'created_at', 'updated_at'],
             'orderBy' => [
                 'field' => 'created_at',
                 'sort' => 'desc'
-            ]
+            ], "limit" => $request->query('limit')
         ]), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 
@@ -86,6 +80,6 @@ class PostController extends BaseAPIController
      */
     public function destroy(string $post_id, PostService $service)
     {
-        return $this->sendResponse($service->delete(['id' => $post_id]), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
+        return $this->sendResponse($service->delete(['id' => $post_id, "author_id" => Auth::id()]), JsonResponse::HTTP_OK, $this->responseMessage[__FUNCTION__]);
     }
 }
