@@ -98,6 +98,7 @@ class PostService extends BaseService
     public function createPost(array $data, $with = [], $id = null)
     {
         DB::beginTransaction();
+        $username = Auth()->user()->username;
         try {
             $categories = $data['categories'];
 
@@ -113,7 +114,7 @@ class PostService extends BaseService
             $this->postCategoryService->createPostCategory($post->id, $categories);
 
             DB::commit();
-
+            Cache::flush();
             return $post;
         } catch (\Throwable $th) {
             DB::rollBack();
