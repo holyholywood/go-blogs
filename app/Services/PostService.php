@@ -98,7 +98,7 @@ class PostService extends BaseService
     public function createPost(array $data, $with = [], $id = null)
     {
         DB::beginTransaction();
-        $username = Auth()->user()->username;
+
         try {
             $categories = $data['categories'];
 
