@@ -16,7 +16,7 @@ class OpenAPIAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $serverIP = Env("SERVER_IP");
+        $serverIP = env("SERVER_IP", '127.0.0.1');
         $requestIP = $request->ip();
         if ($serverIP == $requestIP) {
             return $next($request);
